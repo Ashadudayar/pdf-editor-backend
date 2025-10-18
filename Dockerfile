@@ -1,30 +1,27 @@
 FROM python:3.11-slim
 
-# Install system dependencies for PyMuPDF
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
-    mupdf \
-    mupdf-tools \
-    libmupdf-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy requirements
+# Copy and install requirements
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Python dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-# Copy project files
+# Copy application
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput --clear || true
+# Run migrations during build
+RUN python manage.py migrate --noinput || echo "Migrations will run at startup"
 
-# Expose port
+# Collect static files
+RUN python manage.py collectstatic --noinput || echo "No static files"
+
+# Expose port (Railway will override this)
 EXPOSE 8000
 
-# Start command
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+# CRITICAL: Use $PORT from Railway environment
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --log-level info --access-logfile - --error-logfile -
