@@ -61,7 +61,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -129,15 +128,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media Files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# File Upload Settings
+FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# ========================================
+# CORS Configuration
+# ========================================
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://pdf-editor-frontend-flax.vercel.app",
 ]
 
 CORS_ALLOW_METHODS = [
@@ -163,51 +178,18 @@ CORS_ALLOW_HEADERS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# Add this new section:
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://pdf-editor-frontend-flax.vercel.app",
-    "https://your-app.vercel.app",  # We'll update this later
-]
 
-# Allow CORS for media files
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-]
+# ========================================
+# REST Framework Configuration
+# ========================================
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
 }
-
-
-# Media Files
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Static Files
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-
-# File Upload
-FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
-
-#X_FRAME_OPTIONS = 'SAMEORIGIN'
-#SECURE_CONTENT_TYPE_NOSNIFF = False
-#X_FRAME_OPTIONS = None
-
-# Disable XFrame protection for development
-if DEBUG:
-    MIDDLEWARE = [m for m in MIDDLEWARE if 'XFrameOptionsMiddleware' not in m]
-
-
-# Static files configuration for production
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-FILE_UPLOAD_MAX_MEMORY_SIZE = 52428800  # 50MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
