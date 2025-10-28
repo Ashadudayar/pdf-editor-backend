@@ -166,6 +166,7 @@ CORS_ALLOW_CREDENTIALS = True
 # Add this new section:
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://pdf-editor-frontend-flax.vercel.app",
     "https://your-app.vercel.app",  # We'll update this later
 ]
 
