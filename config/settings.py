@@ -153,7 +153,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://pdfdoor.com",
-    "https://www.pdfdoor.com"
+    "https://www.pdfdoor.com",
     "https://pdf-editor-frontend-flax.vercel.app",
 ]
 
